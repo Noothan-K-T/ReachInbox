@@ -307,8 +307,9 @@ router.get(['/senders', '/senders/list'], async (req: AuthRequest, res: Response
  */
 router.get('/:id', async (req: AuthRequest, res: Response) => {
   try {
+    const emailId = req.params.id as string;
     const email = await prisma.email.findFirst({
-      where: { id: req.params.id, userId: req.userId },
+      where: { id: emailId, userId: req.userId },
       include: {
         sender: { select: { email: true, displayName: true } },
       },

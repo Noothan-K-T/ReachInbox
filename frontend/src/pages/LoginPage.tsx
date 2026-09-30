@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, devLogin } = useAuth();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
