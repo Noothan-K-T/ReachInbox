@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  googleId  String   @unique
+  name      String
+  email     String   @unique
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  senders          Sender[]
+  emails           Email[]
+  slackConnection  SlackConnection?
+
+  @@map("users")
+}
+
+model Sender {
+  id              String   @id @default(uuid())
+  userId          String
+  email           String
+  etherealUser    String
+  etherealPass    String
+  displayName     String?
+  createdAt       DateTime @default(now())
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emails Email[]
+
+  @@unique([userId, email])
+  @@map("senders")
+}
+
+model Email {
+  id              String      @id @default(uuid())
+  userId          String
+  senderId        String
+  recipient       String
+  subject         String
+  body            String
+  scheduledAt     DateTime
+  sentAt          DateTime?
+  status          EmailStatus @default(SCHEDULED)
+  bullJobId       String?
+  idempotencyKey  String      @unique
+  failureReason   String?
+  batchId         String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sender Sender @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([scheduledAt])
+  @@index([batchId])
+  @@map("emails")
+}
+
+model SlackConnection {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  accessToken  String
+  webhookUrl   String?
+  channelId    String?
+  teamId       String?
+  teamName     String?
+  connectedAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("slack_connections")
+}
+
+enum EmailStatus {
+  SCHEDULED
+  PROCESSING
+  SENT
+  FAILED
+}
