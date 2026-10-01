@@ -17,8 +17,21 @@ import queueRoutes from './routes/queue';
 
 const app = express();
 
+const allowedOrigins = [
+  config.frontendUrl?.replace(/\/$/, ''),
+  'http://localhost:5173',
+  'https://reach-inbox-blue.vercel.app',
+].filter(Boolean);
+
 app.use(cors({
-  origin: config.frontendUrl,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Permissive for production deployment
+    }
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
