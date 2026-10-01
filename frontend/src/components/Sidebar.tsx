@@ -20,7 +20,7 @@ export default function Sidebar({
   const { user, logout } = useAuth();
 
   return (
-    <aside className="w-68 shrink-0 h-screen bg-white border-r border-slate-200/80 flex flex-col justify-between select-none z-20">
+    <aside className="w-72 min-w-[280px] max-w-[280px] shrink-0 h-screen bg-white border-r border-slate-200/80 flex flex-col justify-between select-none z-20">
       {/* Top Section */}
       <div className="flex flex-col">
         {/* Brand Header */}
@@ -64,19 +64,22 @@ export default function Sidebar({
         </div>
 
         {/* Action: Compose Button */}
-        <div className="px-4 pt-1 pb-4">
+        <div className="px-4 pt-3 pb-2">
           <button
             onClick={onCompose}
-            className="w-full flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-emerald-600/25 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span className="text-sm">Compose Campaign</span>
+            <span className="text-sm font-medium">Compose Campaign</span>
           </button>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Subtle separator with clean breathing room */}
+        <div style={{ margin: '16px 16px', borderTop: '1px solid #e2e8f0' }} />
+
+        {/* Email Operations Nav */}
         <div className="px-3 space-y-1">
-          <p className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+          <p className="px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
             Email Operations
           </p>
 

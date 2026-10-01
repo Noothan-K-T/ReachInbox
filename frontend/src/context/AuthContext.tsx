@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authApi, User } from '../services/api';
+import toast from 'react-hot-toast';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: () => Promise<void>;
+  login: () => Promise<{ success: boolean; configured: boolean }>;
   devLogin: () => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: User | null) => void;
@@ -34,27 +35,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Check for token in URL (from OAuth redirect)
+    // Check for token in URL (from OAuth redirect) — this takes priority
     const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    if (token) {
-      localStorage.setItem('token', token);
+    const urlToken = params.get('token');
+    if (urlToken) {
+      // Always overwrite any existing token with the fresh OAuth token
+      localStorage.setItem('token', urlToken);
       // Clean URL
       window.history.replaceState({}, '', window.location.pathname);
     }
     fetchUser();
   }, [fetchUser]);
 
-  const login = async () => {
-    const { data } = await authApi.getGoogleAuthUrl();
-    window.location.href = data.url;
+  const login = async (): Promise<{ success: boolean; configured: boolean }> => {
+    try {
+      const { data } = await authApi.getGoogleAuthUrl();
+      if (data.configured && data.url) {
+        window.location.href = data.url;
+        return { success: true, configured: true };
+      }
+      return { success: false, configured: false };
+    } catch {
+      return { success: false, configured: false };
+    }
   };
 
   const devLogin = async () => {
-    const { data } = await authApi.devLogin();
-    localStorage.setItem('token', data.token);
-    setUser(data.user);
-    window.location.href = '/dashboard';
+    try {
+      const { data } = await authApi.devLogin();
+      localStorage.setItem('token', data.token);
+      setUser(data.user);
+      window.location.href = '/dashboard';
+    } catch {
+      toast.error('Failed to initialize demo session');
+    }
   };
 
   const logout = async () => {

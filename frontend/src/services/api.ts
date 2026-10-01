@@ -30,7 +30,7 @@ api.interceptors.response.use(
 
 // Auth endpoints
 export const authApi = {
-  getGoogleAuthUrl: () => api.get<{ url: string }>('/auth/google'),
+  getGoogleAuthUrl: () => api.get<{ configured: boolean; url?: string }>('/auth/google'),
   getMe: () => api.get<{ user: User }>('/auth/me'),
   logout: () => api.post('/auth/logout'),
   devLogin: () => api.post<{ token: string; user: User }>('/auth/dev-login'),

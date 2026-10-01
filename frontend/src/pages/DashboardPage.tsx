@@ -62,16 +62,16 @@ export default function DashboardPage() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header />
 
-        <main className="flex-1 overflow-y-auto px-8 lg:px-14 py-10">
-          <div className="max-w-6xl mx-auto space-y-10 animate-fade-in">
+        <main className="flex-1 overflow-y-auto px-6 lg:px-10 py-6">
+          <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
             
             {/* Open, Spacious Top Hero Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
               <div>
                 <h1 className="text-2xl font-bold tracking-tight text-slate-900">
                   {activeTab === 'scheduled' ? 'Scheduled Campaigns' : 'Delivery History'}
                 </h1>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
                   {activeTab === 'scheduled'
                     ? 'Emails waiting in BullMQ queue for future delivery'
                     : 'Emails processed and transmitted via Ethereal SMTP'}
