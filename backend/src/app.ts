@@ -51,7 +51,13 @@ app.get('/api/health', (_req, res) => {
 
 async function bootstrap() {
   try {
-    await initElasticsearch();
+    // Elasticsearch is optional — don't block startup if unavailable
+    try {
+      await initElasticsearch();
+    } catch (esErr: any) {
+      console.warn('[Elasticsearch] Skipping — not available:', esErr.message);
+    }
+
     startEmailWorker();
 
     app.listen(config.port, () => {
